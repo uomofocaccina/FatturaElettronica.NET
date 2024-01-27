@@ -134,8 +134,24 @@ namespace FatturaElettronica.Test.Ordinaria
                 body.DatiGenerali.DatiGeneraliDocumento.TipoDocumento = "TD01";
                 Assert.IsNull(Challenge.Validate().Errors.FirstOrDefault(x => x.ErrorCode == "00472"));
                 
-                
             }
+        }
+
+        [TestMethod]
+        public void TestTd27_Issue_409()
+        {
+            var cedente = Challenge.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici;
+            var cessionario = Challenge.FatturaElettronicaHeader.CessionarioCommittente.DatiAnagrafici;
+
+            var body = new FatturaElettronicaBody();
+            body.DatiGenerali.DatiGeneraliDocumento.TipoDocumento = "TD27";
+            Challenge.FatturaElettronicaBody.Add(body);
+
+            cedente.IdFiscaleIVA = new IdFiscaleIVA { IdPaese = "IT", IdCodice = "345" };
+            cedente.CodiceFiscale = "123";
+            cessionario.CodiceFiscale = "123";
+            Assert.IsNull(Challenge.Validate().Errors.FirstOrDefault(x => x.ErrorCode == "00472"));
+
         }
 
         [TestMethod]
